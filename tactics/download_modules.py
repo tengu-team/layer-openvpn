@@ -10,21 +10,21 @@ from distutils.dir_util import copy_tree
 import charmtools
 from charmtools.build.tactics import Tactic
 
+
 def make_tarfile(output_filename, source_dir):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
+
 
 class DownloadModulesTactic(Tactic):
     """ This tactic is used by charm-tools to download the modules from the
     Puppetfile at `charm build` time. """
 
     @classmethod
-    def trigger(cls, relpath):
-        """ Determines which files the tactic should apply to. We only want
-        this tactic to trigger once, so let's use the templates/ folder
+    def trigger(cls, entity, target, layer, next_config):
+        """ Determines which files the tactic should apply to.
         """
-        return relpath == os.path.join("files", "puppet")
-
+        return str(entity).endswith("/files/puppet")
 
     @property
     def dest(self):
