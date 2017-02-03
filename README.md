@@ -100,7 +100,7 @@ Report bugs on [the `tengu-charms` Github project](https://github.com/IBCNServic
 
 ## Authors
 
-This software was created in the [IBCN research group](https://www.ibcn.intec.ugent.be/) of [Ghent University](http://www.ugent.be/en) in Belgium. This software is used in [Tengu](http://tengu.intec.ugent.be), a project that aims to make experimenting with data frameworks and tools as easy as possible.
+This software was created in the [IBCN research group](https://www.ibcn.intec.ugent.be/) of [Ghent University](http://www.ugent.be/en) in Belgium. This software is used in [Tengu](https://tengu.io), a project that aims to make experimenting with data frameworks and tools as easy as possible.
 
  - Merlijn Sebrechts <merlijn.sebrechts@gmail.com>
  - Images come from [TorGuard OpenVPN guide](https://torguard.net/knowledgebase.php?action=displayarticle&id=53) and AskUbuntu.
