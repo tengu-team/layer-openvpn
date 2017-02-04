@@ -45,6 +45,7 @@ class TestCharm(unittest.TestCase):
             'push-dns': True,
         })
         sleep(2)
+        self.d.expose('openvpn')
         confcont = self.unit.file_contents('/home/ubuntu/client1.ovpn')
         assert "proto tcp" in confcont, (
             "The client config should contain 'proto tcp'")
@@ -71,6 +72,7 @@ class TestCharm(unittest.TestCase):
             'push-dns': False,
         })
         sleep(2)
+        self.d.expose('openvpn')
         confcont = self.unit.file_contents('/home/ubuntu/client1.ovpn')
         assert "proto udp" in confcont, (
             "The client config should contain 'proto udp'")
@@ -97,7 +99,7 @@ class TestCharm(unittest.TestCase):
     def vpn_test(self, config_file):
         complete_string = "Initialization Sequence Completed"
         full_output = ""
-        timeout = 15  # timeout in seconds
+        timeout = 30  # timeout in seconds
         process = subprocess.Popen([
             'sudo', 'timeout', str(timeout),
             'openvpn', config_file], stdout=subprocess.PIPE)
