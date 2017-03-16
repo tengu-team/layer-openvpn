@@ -51,7 +51,8 @@ An OpenVPN client needs a config file to connect to the OpenVPN server. This Cha
 juju scp openvpn/0:~/<client-name>.ovpn .
 ```
 
-# How do I connect to the VPN?<a name="connect-howto"></a>
+<a name="connect-howto"></a>
+# How do I connect to the VPN?
 
 The client config file works with any OpenVPN-compatible client on any OS. Use the instructions linked below or refer to the generic OpenVPN instructions for your OS.
 
@@ -60,8 +61,8 @@ The client config file works with any OpenVPN-compatible client on any OS. Use t
 - [Connect a MacOSX Desktop.](https://openvpn.net/index.php/access-server/docs/admin-guides-sp-859543150/howto-connect-client-configuration/183-how-to-connect-to-access-server-from-a-mac.html)
 
 
-
-## Connect an Ubuntu Desktop<a name="ubuntu-desktop-client"></a>
+<a name="ubuntu-desktop-client"></a>
+## Connect an Ubuntu Desktop
 
 **Install OpenVPN client**
 
@@ -101,8 +102,8 @@ sudo apt install network-manager-openvpn-gnome
 
 <img src="https://raw.githubusercontent.com/tengu-team/layer-openvpn/master/files/documentation/no-default-gateway-3.jpg" width="400">
 
-
-## Connect an Ubuntu Server<a name="ubuntu-server-client"></a>
+<a name="ubuntu-server-client"></a>
+## Connect an Ubuntu Server
 
 Use the following instructions to connect an Ubuntu server to the VPN.
 
