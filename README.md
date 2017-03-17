@@ -77,8 +77,7 @@ sudo apt install network-manager-openvpn-gnome
 1. Click the Network applet.
 2. Choose `VPN connections > Configure VPN` as shown in the picture below.
 
-<img src="https://raw.githubusercontent.com/tengu-team/layer-openvpn/master/files/documentation/networkmanager-applet.png" width="400
-">
+<img src="https://raw.githubusercontent.com/tengu-team/layer-openvpn/master/files/documentation/networkmanager-applet.png" width="400">
 
 
 3. Click *"Add"*.
