@@ -1,4 +1,9 @@
 options:
+  tunnel-network:
+    type: string
+    default: "10.200.200.0"
+    description: |
+     24 bit address space used for tunnel network.
   key-country:
     type: string
     default: "US"

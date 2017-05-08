@@ -71,6 +71,7 @@ def install_openvpn_xenial():
         'ext_ip': ext_ip,
         'pub_ip': pub_ip,
         'internal_networks': internal_networks,
+        'tunnel_network': conf['tunnel-network'],
     }
     templating.render(
         source='init.pp',
