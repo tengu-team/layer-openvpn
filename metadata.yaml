@@ -7,4 +7,4 @@ tags:
   - network
   - security
 subordinate: false
-series: ['trusty', 'xenial']
+series: ['xenial', 'trusty']

@@ -63,10 +63,13 @@ openvpn::server { '{{servername}}':
     {% for dns_search_domain in dns_search_domains -%}
     "dhcp-option DOMAIN {{dns_search_domain}}",
     {%- endfor %}
-    {% for network in internal_networks -%}
-    "route {{network}}",
-    {%- endfor %}
+    # Make sure that clients route requests to our DNS server through us, even
+    # when our DNS server isn't in one of the subnets we push.
+    "route {{dns_server}} 255.255.255.255",
   {%- endif %}
+  {% for network in internal_networks -%}
+  "route {{network}}",
+  {%- endfor %}
   {%- if push_default_gateway %}
   "redirect-gateway def1 bypass-dhcp"
   {%- endif %}
