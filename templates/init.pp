@@ -20,7 +20,7 @@ openvpn::server { '{{servername}}':
   city         => '{{city}}',
   organization => '{{organization}}',
   email        => '{{email}}',
-  server       => '10.200.200.0 255.255.255.0',
+  server       => '{{tunnel_network}} 255.255.255.0',
   # udp = faster but many firewalls block it
   proto        => '{{protocol}}',
   port         => '{{port}}',
@@ -145,6 +145,6 @@ firewall { '125 POSTROUTING':
   table    => 'nat',
   proto    => 'all',
   chain    => 'POSTROUTING',
-  source   => "10.200.200.0/24",
+  source   => "{{tunnel_network}}/24",
   jump     => 'MASQUERADE',
 }
