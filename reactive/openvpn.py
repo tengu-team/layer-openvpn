@@ -17,7 +17,8 @@ import os
 import stat
 import errno
 import shutil
-from ipaddress import IPv4Address
+import random
+from ipaddress import IPv4Address, ip_network
 
 from charms.reactive import when_all
 from charms.layer.puppet_base import Puppet  # pylint: disable=E0611,E0401
@@ -71,6 +72,8 @@ def install_openvpn_xenial():
         'ext_ip': ext_ip,
         'pub_ip': pub_ip,
         'internal_networks': internal_networks,
+        'serverip': get_tun_network(),
+        'servernetmask': '255.255.255.0',
     }
     templating.render(
         source='init.pp',
@@ -142,3 +145,50 @@ def get_dns_info():
         elif words[0] == "search":
             info['search'] = words[1:]
     return info
+
+
+def get_networks():
+    '''Returns a list with Ip Networks that are in use
+    '''
+    networking = Puppet().facter('networking')
+    interfaces = networking['networking']['interfaces']
+    networks = []
+    for interface in interfaces:
+        if 'bindings' in interfaces[interface]:
+            for binding in interfaces[interface]['bindings']:
+                if 'network' in binding:
+                    networks.append(ip_network(
+                        binding['network'] + '/' + binding['netmask']))
+    return networks
+
+
+def get_tun_network():
+    '''Return a random network for tun interface
+    '''
+    a_class = ip_network('10.0.0.0/255.0.0.0')
+    nets = get_networks()
+    available_networks = [a_class]
+    for network in nets:
+        updated = []
+        for a_net in available_networks:
+            try:
+                net_iter = a_net.address_exclude(network)
+                for n in net_iter:
+                    updated.append(n)
+            except ValueError:
+                pass
+        if updated:
+            available_networks = updated
+    if len(available_networks) == 0:
+        status_set('blocked', 'Could not find available server network')
+
+    subnets = []
+    for a_net in available_networks:
+        try:
+            subs = a_net.subnets(new_prefix=24)
+            subnets.extend(subs)
+        except ValueError:
+            pass
+
+    rand_ip = str(random.choice(subnets))
+    return rand_ip.split('/')[0]
