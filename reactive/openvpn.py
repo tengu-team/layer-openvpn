@@ -181,5 +181,14 @@ def get_tun_network():
             available_networks = updated
     if len(available_networks) == 0:
         status_set('blocked', 'Could not find available server network')
-    rand_ip = str(random.choice(available_networks))
+
+    subnets = []
+    for a_net in available_networks:
+        try:
+            subs = a_net.subnets(new_prefix=24)
+            subnets.extend(subs)
+        except ValueError:
+            pass
+
+    rand_ip = str(random.choice(subnets))
     return rand_ip.split('/')[0]
