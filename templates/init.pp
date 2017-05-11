@@ -20,7 +20,7 @@ openvpn::server { '{{servername}}':
   city         => '{{city}}',
   organization => '{{organization}}',
   email        => '{{email}}',
-  server       => '10.200.200.0 255.255.255.0',
+  server       => '{{serverip}} {{servernetmask}}',
   # udp = faster but many firewalls block it
   proto        => '{{protocol}}',
   port         => '{{port}}',
