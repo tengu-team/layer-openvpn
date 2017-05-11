@@ -157,7 +157,8 @@ def get_networks():
         if 'bindings' in interfaces[interface]:
             for binding in interfaces[interface]['bindings']:
                 if 'network' in binding:
-                    networks.append(ip_network(binding['network'] + '/' + binding['netmask']) )
+                    networks.append(ip_network(
+                        binding['network'] + '/' + binding['netmask']))
     return networks
 
 
