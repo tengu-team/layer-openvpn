@@ -145,6 +145,6 @@ firewall { '125 POSTROUTING':
   table    => 'nat',
   proto    => 'all',
   chain    => 'POSTROUTING',
-  source   => "10.200.200.0/24",
+  source   => '{{serverip}}/{{serverslashmask}}',
   jump     => 'MASQUERADE',
 }

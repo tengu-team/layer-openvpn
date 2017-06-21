@@ -74,6 +74,7 @@ def install_openvpn_xenial():
         'internal_networks': internal_networks,
         'serverip': get_tun_network(),
         'servernetmask': '255.255.255.0',
+        'serverslashmask': '24',
     }
     templating.render(
         source='init.pp',
