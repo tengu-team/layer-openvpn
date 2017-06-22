@@ -55,6 +55,7 @@ def install_openvpn_xenial():
         pub_ip = unit_get('public-address')
     internal_networks = eipndict['internal-networks']
     context = {
+        'privatenetwork': conf['private-network'],
         'servername': SERVERNAME,
         'country': conf['key-country'],
         'province': conf['key-province'],

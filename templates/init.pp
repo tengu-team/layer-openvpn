@@ -24,6 +24,11 @@ openvpn::server { '{{servername}}':
   # udp = faster but many firewalls block it
   proto        => '{{protocol}}',
   port         => '{{port}}',
+  # Fix for pushing routes to the address space, but not the gateway
+  {%- if not push_default_gateway %}
+  push         => ['{{privatenetwork}}/24',],
+  {%- endif %}
+
   # Accept connections on the external ip. We cannot leave this empty because
   # then we have the chance that the vpn server will respond using a different
   # interface than where he got the request from. The client does not like this.
