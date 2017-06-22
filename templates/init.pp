@@ -26,7 +26,7 @@ openvpn::server { '{{servername}}':
   port         => '{{port}}',
   # Fix for pushing routes to the address space, but not the gateway
   {%- if not push_default_gateway %}
-  push         => ['{{network}}/24'],
+  push         => ['{{network}}/24',],
   {%- endif %}
 
   # Accept connections on the external ip. We cannot leave this empty because
