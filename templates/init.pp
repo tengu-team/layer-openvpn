@@ -58,7 +58,9 @@ openvpn::server { '{{servername}}':
   #
   push         => [
   {% if not push_default_gateway %}
-  "route {{privatenetwork}}", 
+    {% for route in privatenetworks -%}
+      "route {{route}}", 
+    {%- endfor %}
   {% endif %}
   {%- if push_dns %}
     "dhcp-option DNS {{dns_server}}",
