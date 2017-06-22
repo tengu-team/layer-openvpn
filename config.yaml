@@ -1,4 +1,8 @@
 options:
+  private-network:
+    type: string
+    default: ""
+    description: The private network to push routes to e.g. 172.31.1.0/24
   key-country:
     type: string
     default: "US"

@@ -56,8 +56,10 @@ openvpn::server { '{{servername}}':
   # - our DNS server
   # - routes to the networks we know
   #
-
   push         => [
+  {% if not push_default_gateway %}
+  "route {{privatenetwork}}", 
+  {% endif %}
   {%- if push_dns %}
     "dhcp-option DNS {{dns_server}}",
     {% for dns_search_domain in dns_search_domains -%}
