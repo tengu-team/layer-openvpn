@@ -19,6 +19,7 @@ import errno
 import shutil
 import random
 from ipaddress import IPv4Address, ip_network
+from subprocess import check_output
 
 from charms.reactive import when_all
 from charms.layer.puppet_base import Puppet  # pylint: disable=E0611,E0401
@@ -47,12 +48,7 @@ def install_openvpn_xenial():
     clients = conf['clients'].split()
     eipndict = get_extip_and_networks()
     ext_ip = eipndict['external-ip']
-    pub_ip = eipndict['external-ip']
-    # If public-address is different from private-address, we're probably in a
-    # juju-supported cloud that we can trust to give us the right address that
-    # clients need to use to connect to us.
-    if unit_get('private-address') != unit_get('public-address'):
-        pub_ip = unit_get('public-address')
+    pub_ip = eipndict['public-ip']
     internal_networks = eipndict['internal-networks']
     context = {
         'servername': SERVERNAME,
@@ -121,16 +117,34 @@ def get_extip_and_networks():
                 # https://bugs.python.org/issue21386
                 if not address.is_private:
                     ext_ip = address
-                #
-                # GET PRIVATE IPS
-                #
-                else:
-                    internal_networks.append(
-                        "{} {}".format(binding['network'], binding['netmask']))
     if not ext_ip:
         ext_ip = facter['networking']['ip']
+    # If public-address is different from private-address, we're probably in a
+    # juju-supported cloud that we can trust to give us the right address that
+    # clients need to use to connect to us. If not, just use ext_ip.
+    if unit_get('private-address') != unit_get('public-address'):
+        pub_ip = unit_get('public-address')
+    else:
+        pub_ip = ext_ip
+    print("External IP according to get_extip logic: {}".format(ext_ip))
+    print("Public IP according to get_extip logic: {}".format(pub_ip))
+
+    internal_networks = []
+    pub_ip_obj = IPv4Address(pub_ip)
+    ext_ip_obj = IPv4Address(ext_ip)
+    for network in get_networks(remove_tunnels=True):
+        if pub_ip_obj in network or ext_ip_obj in network:
+            continue
+        internal_networks.append("{} {}".format(
+            network.network_address,
+            network.netmask))
+    print("Routes to push according to logic: {}".format(internal_networks))
     return {
+        # IP of local interface that clients connect to.
         "external-ip": ext_ip,
+        # IP that remote clients will use to connect to. This is identical to
+        # external-ip except when Juju provides us with
+        "public-ip": pub_ip,
         "internal-networks": internal_networks,
     }
 
@@ -148,18 +162,20 @@ def get_dns_info():
     return info
 
 
-def get_networks():
+def get_networks(remove_tunnels=False):
     '''Returns a list with Ip Networks that are in use
     '''
-    networking = Puppet().facter('networking')
-    interfaces = networking['networking']['interfaces']
     networks = []
-    for interface in interfaces:
-        if 'bindings' in interfaces[interface]:
-            for binding in interfaces[interface]['bindings']:
-                if 'network' in binding:
-                    networks.append(ip_network(
-                        binding['network'] + '/' + binding['netmask']))
+    output = check_output(['ip', 'route', 'show'], universal_newlines=True)
+    for line in output.splitlines():
+        # Skip all tunnel and VPN-connected networks
+        if remove_tunnels and ("tun" in line):
+            continue
+        words = line.split()
+        # Skip default gateways
+        if words[0] == "default":
+            continue
+        networks.append(ip_network(words[0]))
     return networks
 
 
