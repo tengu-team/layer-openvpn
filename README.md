@@ -117,6 +117,7 @@ sudo openvpn --config <client-name>.ovpn --script-security 2 --up /etc/openvpn/u
 
  - NetworkManager uses the VPN as default gateway regardless of server config. Follow steps 6. and 7. to disable this.
  - For cases where the VPN is not be the default gateway, and DNS settings are enabled, it is important to keep in mind that the clients will have two options for DNS nameservers: a public one (from the clients network) and a private one (from the network behind the VPN). The `openvpn` cli client will strictly use the private nameserver. Network Manager is a little bit smarter. Network Manager will send the DNS query to the public nameserver unless the url address is part of the search domain of the private network. This means that if the search domain on the private network is `example.com`, queries for `intranet.example.com` will be send to the private DNS server and queries for `www.google.com` will be send to the public DNS server. More information: https://bugs.launchpad.net/ubuntu/+source/openvpn/+bug/1211110/comments/50
+ - If you use the VPN on Google Compute Engine with `push-default-gateway=False`, then traffic to GCE VM's will not go over the VPN by default. This is because each GCE VM is in a `255.255.255.255` network, so it has no idea which networks it has acces to, i.e. which networks it should push to VPN clients. You will need to manually add a route in the VPN clients if you want this to happen.
 
 # Contact Information
 
