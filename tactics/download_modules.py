@@ -22,6 +22,7 @@ from distutils.dir_util import copy_tree
 
 import charmtools
 from charmtools.build.tactics import Tactic
+from charmtools.build.errors import BuildError
 
 
 def make_tarfile(output_filename, source_dir):
@@ -53,7 +54,22 @@ class DownloadModulesTactic(Tactic):
             if exception.errno != errno.EEXIST:
                 raise
         copy_tree(self.entity, self.dest)
-        check_call(['librarian-puppet', 'install', '--verbose'], cwd=self.dest)
+        try:
+            check_call(['librarian-puppet', 'install', '--verbose'],
+                       cwd=self.dest)
+        except OSError as exception:
+            if exception.errno == 2:
+                print(exception)
+                raise BuildError(
+                    "ERROR: File not found. "
+                    "Is 'librarian-puppet' installed? Install with:\n"
+                    "sudo apt install ruby; "
+                    "sudo gem install librarian-puppet\n"
+                    "make sure to use the pip version of charm-build\n"
+                    "(run charm-build instead of charm build)")
+            else:
+                raise
+
         make_tarfile(self.dest / "modules.tgz", self.dest / "modules")
         shutil.rmtree(self.dest / 'modules')
         shutil.rmtree(self.dest / '.tmp')
